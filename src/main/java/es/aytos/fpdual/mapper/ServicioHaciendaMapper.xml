@@ -1,0 +1,92 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="es.aytos.fpdual.mapper.ServicioHaciendaMapper">
+    
+    <sql id="sqlCiudadano">
+        SELECT id,
+               nombre,
+               direccion,
+               facturacionAnual,
+               paisResidencia,
+               diasPermanencia
+        FROM CIUDADANOS
+    </sql>
+
+    
+    <select id="consultarCiudadanos" resultType="es.aytos.fpdual.modelo.Ciudadano">
+        <include refid="sqlCiudadano"/>
+        ORDER BY id
+    </select>
+    
+    <select id="consultarCiudadanoPorId" resultType="es.aytos.fpdual.modelo.Ciudadano">
+        <include refid="sqlCiudadano"/>
+        WHERE id = #{id}
+    </select>
+    
+    <select id="consultarCiudadanosPorVariosId" resultType="es.aytos.fpdual.modelo.Ciudadano">
+        <include refid="sqlCiudadano"/>
+        
+        <if test="ciudadanos!=null and ciudadanos.size() > 0">
+            WHERE id IN 
+            <foreach collection="ciudadanos" item="c" open="(" separator="," close=")">
+                #{c.id} 
+            </foreach>
+            
+        </if>
+    </select>
+    
+    <insert id="insertarCiudadano" parameterType="es.aytos.fpdual.modelo.Ciudadano">
+        INSERT INTO CIUDADANOS(id,
+               nombre,
+               direccion,
+               facturacionAnual,
+               paisResidencia,
+               diasPermanencia) 
+               VALUES (#{ciudadano.id, jdbcType=NUMERIC},
+                #{ciudadano.nombre, jdbcType=VARCHAR},
+                #{ciudadano.direccion, jdbcType=VARCHAR},
+                #{ciudadano.facturacionAnual, jdbcType=NUMERIC},
+                #{ciudadano.paisResidencia, jdbcType=VARCHAR},
+                #{ciudadano.diasPermanencia, jdbcType=NUMERIC})
+    </insert>
+    
+    <delete id="borrarCiudadanos">
+        DELETE CIUDADANOS
+    </delete>  
+    
+    <sql id="sqlMoroso">
+        SELECT id,
+               nombre,
+               actuacion
+        FROM MOROSOS
+    </sql>
+    
+    <insert id="insertarMoroso" parameterType="es.aytos.fpdual.modelo.Moroso">
+        INSERT INTO MOROSOS(id,
+               nombre,
+               actuacion) 
+               VALUES (#{moroso.id, jdbcType=NUMERIC},
+                #{moroso.nombre, jdbcType=VARCHAR},
+                #{moroso.actuacion, jdbcType=VARCHAR})
+    </insert>
+ 
+    <select id="consultarMorosos" resultType="es.aytos.fpdual.modelo.Moroso">
+        <include refid="sqlMoroso"/>
+    </select>
+    
+    <select id="consultarMorosoPorId" resultType="es.aytos.fpdual.modelo.Moroso">
+        <include refid="sqlMoroso"/>
+        WHERE id = #{id}
+    </select>
+
+    <delete id="borrarMorosos">
+        DELETE MOROSOS
+    </delete>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+</mapper>
